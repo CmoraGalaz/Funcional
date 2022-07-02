@@ -1,0 +1,46 @@
+;constructor de primera carta
+(define firstCard (lambda (x)
+                    (if (or (isPrime x) (= x 1))
+                        (cons (firstC x) null)
+                        null)))
+#|
+EJEMPLOS
+(firstCard 2)
+'((1 2 3))
+> (firstCard 3)
+'((1 2 3 4))
+> (firstCard 4)
+'()
+|#
+
+;constructor de n cartas.
+;Recursion: natural
+(define nCards (lambda (n)
+                (define nCards-k (lambda (n j k lst)
+                        (if (= k 1)
+                            (cons (+ (* n j) (+ k 1)) lst)
+                            (nCards-k n j (- k 1) (cons (+ (* n j) (+ k 1)) lst)))))
+                (define nCards-j (lambda (n j lst)
+                                    (if (= j n)
+                                        (cons (nCards-k n j n (list 1)) lst)
+                                        (nCards-j n (+ j 1) (cons (nCards-k n j n (list 1)) lst)))))
+                (nCards-j n 1 null)))
+
+;(nCards 3)
+
+(define n2Cards (lambda (n)
+                  (define n2Cards-k (lambda (n i j k lst)
+                                      (if (= k n)
+                                          (cons (+ (+ (+ n 2)(* (- k 1) n))(modulo (+ (* (- i 1)(- k 1))(- j 1)) n)) lst)
+                                          (n2Cards-k n i j (+ k 1) (cons (+ (+ (+ n 2)(* (- k 1) n))(modulo (+ (* (- i 1)(- k 1))(- j 1)) n)) lst)))))
+                  
+                  (define n2Cards-j (lambda (n i j lst)
+                                   (if (= j n)
+                                       (cons (n2Cards-k n i j 1 (list (+ i 1))) lst)
+                                       (n2Cards-j n i (+ j 1) (cons (n2Cards-k n i j 1 (list (+ i 1))) lst)))))
+                  (define n2Cards-i (lambda (n i lst)
+                                      (if (= n i)
+                                          (n2Cards-j n i 1 lst)
+                                          (n2Cards-i n (+ i 1)(n2Cards-j n i 1 lst)))))
+                  
+                  (n2Cards-i n 1 null)))
