@@ -1,0 +1,77 @@
+lang racket
+(require "Card.rkt")
+(define CardsSet (lambda (a b c )
+(append(list a)(list b)(list c))))
+;(Deck (firstCard 2)(nCards 2)(n2Cards 2)
+;> (dobble? (CardsSet (firstCard 2)(nCards 2)(n2Cards 2)))
+; (dobble? (CardsSet (firstCard 2)(list 1 1 1 1)(n2Cards 2)))
+;
+(define dobble? (lambda (cardsSet)
+(define searchUnique(lambda (card element cont)
+(cond ((and (null? card) (= cont 1)) cont)
+((and (null? card) (> cont 1)) cont)
+((eq? (car card) element) (searchUnique (cdr card) element (+ cont 1)))
+((not(eq? (car card) element)) (searchUnique (cdr card) element cont))
+)
+)
+)
+
+              (define searchUniqueBetween(lambda (card element cont)
+                                           (cond ((and (null? card) (<= cont 1)) cont)
+                                                 ((and (null? card) (> cont 1)) cont)
+                                                 ((eq? (car card) element) (searchUniqueBetween (cdr card) element (+ cont 1)))
+                                                 ((not(eq? (car card) element)) (searchUniqueBetween (cdr card) element cont))
+                                                 )
+                                           )
+                )
+
+              (define differentElements(lambda (card element tailElement)
+                                         (if (> (searchUnique card element 0) 1)
+                                             0
+                                             (if (null? tailElement)
+                                                 1
+                                                 (differentElements card (car tailElement) (cdr tailElement))
+                                                 )
+                                             )
+                                         )
+                )
+
+              (define differentElementsBetween(lambda (card element tailElement)
+                                                (if (> (searchUniqueBetween card element 0) 1)
+                                                    0
+                                                    (if (null? tailElement)
+                                                        1
+                                                        (differentElementsBetween card (car tailElement) (cdr tailElement))
+                                                        )
+                                                    )
+                                                )
+                )
+
+              (define validate1Card (lambda (cardsSet)
+                                      (if (null? cardsSet)
+                                          #t
+                                          (if (= 0 (differentElements (car cardsSet) (caar cardsSet) (cdr (car cardsSet))))
+                                              #f
+                                              (validate1Card (cdr cardsSet))))
+                                      )
+                )
+
+              (define validateAllCards (lambda (cardsSet cardsSetAux)
+                                         (if (and (null? cardsSetAux) (null? (cdr cardsSet)))
+                                             #t
+                                             (if (and (null? cardsSetAux) (not (null? (cdr cardsSet))))
+                                                 (validateAllCards (cdr cardsSet) (cdr (cdr cardsSet)))
+                                                 (if (= 0 (differentElementsBetween (car cardsSet) (caar cardsSetAux) (cdr (car cardsSetAux))))
+                                                     #f
+                                                     (validateAllCards cardsSet (cdr cardsSetAux)))))
+                                         )
+                )
+              (if (and (validate1Card cardsSet) (validateAllCards cardsSet (cdr cardsSet)))
+                  #t
+                  #f)
+              )
+)
+
+(define numCards (lambda (c)
+(+(+(* c c)c)1))
+)
