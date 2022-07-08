@@ -1,0 +1,8 @@
+;findTotalCards
+;DOM-> card (list)
+;REC-> (int)
+(define findTotalCards (lambda (card)
+                          (if (null? card)
+                              null
+                              (let ([x (- (length card) 1)])
+                                (+ (* x x) x 1)))))
