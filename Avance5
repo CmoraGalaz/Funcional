@@ -1,0 +1,4 @@
+;getName
+;DOM-> player (lista)
+;REC-> (list)
+(define getName(lambda (player) (caar player)))
