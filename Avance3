@@ -1,0 +1,8 @@
+;requiredElements
+;DOM-> numE (int) X deck (list) X elements (list)
+;REC-> (list)
+(define requiredElements(lambda (card)
+                          (if (null? card)
+                              null
+                              (let ([x (- (length card) 1)])
+                                (+ (* x x) x 1)))))
