@@ -1,0 +1,7 @@
+;nthCard
+;DOM-> cardsSet (list)
+;REC-> (list)
+(define nthCard (lambda (cardsSet n)
+                  (if (> n (- (numCards cardsSet) 1))
+                      null
+                      (list-ref cardsSet n))))
