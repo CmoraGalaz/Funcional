@@ -1,0 +1,4 @@
+;DOM-> game (list)
+;REC-> (list)               
+(define finish (lambda (game)
+                 (reverse (cons '("Finish") (cdr (reverse game))))))
