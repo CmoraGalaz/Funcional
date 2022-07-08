@@ -1,0 +1,5 @@
+;whoseTurnIsIt?
+;DOM-> game (list)
+;REC-> (string)
+(define whoseTurnIsIt? (lambda (game)
+                         (caaaar game)))
