@@ -1,0 +1,1 @@
+(define cardsSet (lambda (Elements numE maxC rndFn))  contructor y aridad
