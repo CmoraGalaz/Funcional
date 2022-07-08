@@ -1,0 +1,12 @@
+Game
+(define game (lambda (numPlayers cardsSet mode mdFn)
+               (define createPlayers(lambda (numPlayers jugador n)
+                                      (if (= n numPlayers)
+                                          (let ([x (cons (cons n -1) "noCards")]) (cons x jugador))
+                                          (createPlayers numPlayers (let ([x (cons (cons n -1) "noCards")]) (cons x jugador)) (+ n 1))
+                                          )))
+               (if (eq? mode stackMode)
+                   (list (reverse (createPlayers numPlayers '() 1)) cardsSet (cons "noCards" "stackMode") '("Playing"))
+                   null);Aqui debo implementar el emptyHandsStackMode 
+               )
+  )
