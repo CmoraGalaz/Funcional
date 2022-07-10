@@ -1,0 +1,138 @@
+#lang racket
+;Funciones que utilizaremos en Deck para la construccion de nuestro set de cartas.
+(provide firstCard)
+(provide nCard)
+(provide nSquaredCard)
+(provide requiredElements)
+(provide getElement)
+(provide randomFn)
+(provide disorderList)
+(provide countElementsFano)
+(provide primo?)
+
+;TDA CARTA
+;Primera Carta
+;DOM-> numE (int) X deck (list) X elements (list)
+;REC-> (list)
+(define firstCard (lambda (numE deck elements)
+                        (if (<= numE 1)
+                            (cons (getElement elements numE) deck);Caso Base
+                            (firstCard (- numE 1) (cons (getElement elements numE) deck) elements))
+                        )
+  )
+;nCard
+;DOM-> numE (int) X deck (list) X elements (list)
+;REC-> (list)
+(define nCard (lambda (numE deck elements)
+
+                (define nCardImpl (lambda (n j k lista elements);k=n j=iteracion de n cartas
+                        (if (<= k 1)
+                            (cons (getElement elements (+ (* n j) (+ k 1))) lista);Caso Base
+                            (nCardImpl n j (- k 1) (cons (getElement elements (+ (* n j) (+ k 1))) lista) elements))
+                        )
+                  )
+
+                (define incrementJ(lambda (n j lista elements)
+                                    (if (= j n)
+                                        (cons (nCardImpl n j n (list (getElement elements 1)) elements) lista)
+                                        (incrementJ n (+ j 1) (cons (nCardImpl n j n (list (getElement elements 1)) elements) lista) elements)
+                                        )
+                                    )
+                  )
+                (incrementJ numE 1 deck elements)
+                )
+  )
+
+;nSquaredCard
+;DOM-> numE (int) X deck (list) X elements (list)
+;REC-> (list)
+(define nSquaredCard (lambda (numE deck elements)
+
+                (define nSquaredCardImpl (lambda (n i j k lista elements);k=n 
+                        (if (<= k 1)
+                            (cons (getElement elements (+ n 2 (* n (- k 1)) (remainder (- (+ j (* (- k 1) (- i 1))) 1) n ))) lista)  ;Caso Base                            
+                            (nSquaredCardImpl n i j (- k 1) (cons (getElement elements (+ n 2 (* n (- k 1)) (remainder (- (+ j (* (- k 1) (- i 1))) 1) n ))) lista) elements)
+                            )
+                        )
+                  )
+                       
+                (define incrementSquaredJ(lambda (n j i lista elements)
+                                    (if (= j n)
+                                        (cons (nSquaredCardImpl n i j n (list (getElement elements (+ i 1))) elements) lista)
+                                        (incrementSquaredJ n (+ j 1) i (cons (nSquaredCardImpl n i j n (list (getElement elements (+ i 1))) elements) lista) elements)
+                                        )
+                                    )
+                  )
+                       
+                (define incrementSquaredI(lambda (n i lista elements)
+                                    (if (= i n)
+                                        (incrementSquaredJ n 1 i lista elements)
+                                        (incrementSquaredI n (+ i 1) (incrementSquaredJ n 1 i lista elements) elements)
+                                        )
+                                    )
+                  )      
+                (incrementSquaredI numE 1 deck elements)
+                )
+  )
+
+
+;requiredElements
+;DOM-> numE (int) X deck (list) X elements (list)
+;REC-> (list)
+(define requiredElements(lambda (card)
+                          (if (null? card)
+                              null
+                              (let ([x (- (length card) 1)])
+                                (+ (* x x) x 1)))))
+
+;----------------------------------------------------------
+;TDA Elemento
+;getElement
+;DOM-> elements (list) X n (int)
+;REC-> (list)
+(define getElement (lambda (elements n)(list-ref elements (- n 1))))                        
+
+
+(define m 2147483647)
+(define a 1103515245)
+(define c 12345)
+
+(define randomFn (lambda (xn)
+                   (modulo (+ (* a xn) c) m)
+                 )
+)
+
+;disorderList
+;Funcion para desordenar listas
+;DOM-> lista (list) X auxList (lista) rndFn (Funcion) count (int)
+;REC-> (list)
+(define disorderList (lambda (lista auxList rndFn half count)
+                       (if (< count 0)
+                           auxList
+                           (cond ((<= (rndFn half) (rndFn count)) (disorderList lista (cons (list-ref lista count) (reverse auxList)) rndFn half (- count 1)))
+                                 ((> (rndFn half) (rndFn count)) (disorderList lista (cons (list-ref lista count) auxList) rndFn half (- count 1)))))
+                       )
+  )
+
+;ElementosdelPlano
+;Funcion que cuenta elementos del plano de Fano
+;DOM-> n (int)
+;REC-> (int)
+(define countElementsFano (lambda (n)(+ (* n n) n 1)))
+
+
+;Funcion que determina si un numero es primo
+;DOM-> n (int)
+;REC-> (boolean)
+(define primo? (lambda (n)
+                 (define (F n i) 
+                   (cond ((< n (* i i)) #t)
+                         ((zero? (remainder n i)) #f)
+                         (else
+                          (F n (+ i 1)))))
+                 (cond ((< n 2) #f)
+                       (else
+                        (F n 2))
+                       )
+                 )
+  )
