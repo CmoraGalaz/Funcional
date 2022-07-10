@@ -1,0 +1,10 @@
+#lang racket
+;Funciones que utilizaremos en Deck para la construccion de nuestro set de cartas.
+(provide firstCard)
+(provide nCard)
+(provide nSquaredCard)
+(provide requiredElements)
+(provide getElement)
+(provide randomFn)
+(provide disorderList)
+(provide cou
